@@ -1,213 +1,345 @@
-# GanSystems Dashboard
+# 🌱 GanSystems Dashboard
 
-GanSystems is a Next.js dashboard for ESP32-based farm automation. It combines authenticated multi-user dashboards, controller management, telemetry ingestion, MQTT command delivery, WebSocket live updates, and route-scoped plus section-scoped error recovery.
+![GanSystems](screenshots/cover.png)
 
-## Current stack
+GanSystems is an AI-powered IoT farm management platform designed to automate agricultural operations through ESP32-based controllers, real-time telemetry monitoring, remote device management, and intelligent irrigation and pest-control scheduling.
 
-- Next.js 16
-- React 19
-- TypeScript
-- Drizzle ORM
-- Neon Postgres via `@neondatabase/serverless`
-- MQTT for device command delivery and broker-originated updates
-- Native WebSocket server attached through a custom Node server
-- Zod for API validation
-- Recharts for telemetry history views
+The platform provides farmers, agricultural organizations, and researchers with a centralized dashboard for monitoring field conditions, controlling connected devices, analyzing telemetry data, and managing farm automation workflows from anywhere.
 
-## What the app does
+---
 
-- User signup, login, logout, and session-backed dashboard access
-- Dashboard overview for controllers, alerts, averages, and command state
-- Controller detail pages with:
-  - live controller status
-  - telemetry cards
-  - manual actuator commands
-  - channel history charts
-  - camera snapshots
-  - pest-control schedule and activity views
-- Settings area for:
-  - profile updates
-  - controller registration
-  - channel setup
-  - generated ESP32 sync contract guidance
-- Device sync endpoint for ESP32 telemetry and acknowledgements
-- MQTT integration for device-facing command publish and inbound broker messages
-- WebSocket fanout for near-real-time dashboard updates
+## 🌐 Live Demo
 
-## Architecture
+**Website:** https://gansystem.vercel.app
 
-High-level structure:
-
-- `app/`
-  - App Router pages, layouts, API routes, global error boundaries, and not-found pages
-- `src/components/`
-  - UI for auth, dashboard, home, and system-level reusable states
-- `src/lib/services/`
-  - Domain logic for auth, controllers, channels, alerts, telemetry, snapshots, commands, pest control, and device sync
-- `src/lib/api.ts`
-  - Shared route helpers for auth enforcement, JSON parsing, and route error handling
-- `src/lib/db/`
-  - Drizzle schema and Neon database client
-- `src/lib/mqtt/`
-  - MQTT client bootstrap and broker message handling
-- `src/lib/ws/`
-  - WebSocket server and browser context wiring
-- `drizzle/`
-  - SQL migrations and migration metadata
-- `scripts/migrate.ts`
-  - Migration runner
-- `server.ts`
-  - Custom Next.js HTTP server that mounts WebSocket upgrade handling and initializes MQTT
-
-## Error handling
-
-The app now uses layered error handling:
-
-- `app/global-error.tsx`
-  - catches root shell failures
-- `app/error.tsx`
-  - catches application-level rendering failures
-- route-level boundaries such as:
-  - `app/dashboard/error.tsx`
-  - `app/login/error.tsx`
-  - `app/signup/error.tsx`
-- section-scoped boundaries inside dashboard client views
-  - if a dashboard panel fails, the surrounding shell stays mounted
-  - the local failure is rendered inline where that panel or resource belongs
-
-This means a failure in one dashboard section should no longer blank the entire dashboard content area by default.
-
-## Local development
-
-1. Install dependencies
-
-```bash
-npm install
-```
-
-2. Set environment variables in `.env.local`
-
-Required:
-
-```bash
-DATABASE_URL=postgres://...
-```
-
-Common optional runtime variables:
-
-```bash
-MQTT_BROKER_URL=mqtt://...
-MQTT_USERNAME=...
-MQTT_PASSWORD=...
-HOSTNAME=0.0.0.0
-PORT=3000
-```
-
-3. Run migrations
-
-```bash
-npm run migrate
-```
-
-4. Start the app
-
-For standard Next development:
-
-```bash
-npm run dev
-```
-
-For the custom Node server with WebSocket and MQTT startup behavior:
-
-```bash
-npm run dev:server
-```
-
-5. Open the app
+### Demo Account
 
 ```text
-http://localhost:3000
+Email: demo@gansys.app
+Password: demo1234
 ```
 
-## Scripts
+---
+
+# 🚀 Project Overview
+
+Modern agriculture increasingly depends on connected devices and real-time monitoring to improve productivity while reducing water, fertilizer, and labor costs.
+
+GanSystems was developed as an end-to-end IoT dashboard that connects ESP32 field controllers with a cloud-based monitoring platform.
+
+The system enables users to:
+
+* Monitor farm devices remotely
+* Track sensor telemetry
+* Control irrigation systems
+* Schedule automated operations
+* Manage pest-control spraying
+* Receive real-time updates
+* Analyze historical farm data
+
+---
+
+# ✨ Key Features
+
+## Authentication & User Management
+
+* User registration
+* Login and logout
+* Session-based authentication
+* Protected dashboard access
+
+## Farm Controller Management
+
+* Register ESP32 controllers
+* Manage connected devices
+* Monitor controller health
+* Device synchronization
+
+## Real-Time Monitoring
+
+* Live telemetry updates
+* Soil monitoring
+* Water level tracking
+* Sensor status monitoring
+* Controller activity tracking
+
+## Irrigation Automation
+
+* Pump control
+* Irrigation scheduling
+* Automated watering workflows
+* Remote actuator management
+
+## Pest Control Automation
+
+* Scheduled spraying
+* Pest-control activity tracking
+* Automated command execution
+* Spray cycle monitoring
+
+## Dashboard Analytics
+
+* Historical telemetry charts
+* Device statistics
+* Alert monitoring
+* Activity summaries
+* System performance metrics
+
+## Camera Integration
+
+* Camera snapshots
+* Remote image monitoring
+* Visual farm inspection support
+
+## Real-Time Communication
+
+* MQTT integration
+* WebSocket updates
+* Live dashboard synchronization
+* Device acknowledgement tracking
+
+---
+
+# 📸 Screenshots
+
+## Dashboard Overview
+
+![Dashboard](screenshots/dashboard.png)
+
+## Controller Management
+
+![Controllers](screenshots/controllers.png)
+
+## Telemetry Monitoring
+
+![Telemetry](screenshots/telemetry.png)
+
+## Settings & Device Registration
+
+![Settings](screenshots/settings.png)
+
+---
+
+# 🛠 Technologies Used
+
+### Frontend
+
+* Next.js 16
+* React 19
+* TypeScript
+* CSS
+* Recharts
+
+### Backend
+
+* Next.js API Routes
+* Node.js
+* Custom WebSocket Server
+* MQTT Integration
+
+### Database
+
+* PostgreSQL
+* Neon Database
+* Drizzle ORM
+
+### IoT & Embedded Systems
+
+* ESP32
+* MQTT Protocol
+* Sensor Telemetry
+* Device Synchronization
+
+### Validation & Security
+
+* Zod
+* Session Authentication
+* Route Protection
+
+---
+
+# 🏗 System Architecture
+
+GanSystems consists of three primary layers:
+
+### 1. IoT Device Layer
+
+ESP32 controllers deployed in the field collect:
+
+* Soil data
+* Water-level data
+* Environmental readings
+* Device status information
+
+### 2. Cloud Platform Layer
+
+Handles:
+
+* Device synchronization
+* Data processing
+* Telemetry storage
+* MQTT communication
+* Authentication
+
+### 3. Dashboard Layer
+
+Provides:
+
+* Monitoring
+* Visualization
+* Automation controls
+* Reporting
+* Device management
+
+---
+
+# 📂 Project Structure
+
+```text
+gansystem/
+├── app/
+├── src/
+├── drizzle/
+├── scripts/
+├── tests/
+├── docs/
+├── GanSys/
+├── c++/
+├── screenshots/
+├── server.ts
+├── package.json
+└── README.md
+```
+
+---
+
+# 🔥 Major Capabilities
+
+### Remote Farm Management
+
+Control and monitor agricultural systems from anywhere.
+
+### Automated Irrigation
+
+Reduce water waste through scheduled irrigation workflows.
+
+### Pest-Control Scheduling
+
+Automate pest-control operations and reduce manual intervention.
+
+### Live Telemetry
+
+Receive real-time updates from connected field devices.
+
+### Device Synchronization
+
+Maintain controller configuration and firmware synchronization.
+
+### Historical Analytics
+
+Analyze trends and optimize farm operations using collected telemetry.
+
+---
+
+# 👨‍💻 My Contributions
+
+As a developer on GanSystems, I contributed to:
+
+* Full-stack application development
+* Dashboard architecture
+* IoT device integration
+* ESP32 communication workflows
+* MQTT messaging implementation
+* WebSocket real-time updates
+* PostgreSQL database integration
+* Drizzle ORM configuration
+* API development
+* Telemetry visualization
+* Farm automation workflows
+* User authentication
+* Responsive UI implementation
+
+---
+
+# 🎯 Real-World Applications
+
+GanSystems can be adapted for:
+
+* Smart Irrigation Systems
+* Precision Agriculture
+* Greenhouse Monitoring
+* Fish Farming Automation
+* Agricultural Research
+* Smart Farm Management
+* Remote Environmental Monitoring
+
+---
+
+# 🚀 Deployment
+
+Production deployment requires:
+
+* Node.js runtime
+* PostgreSQL database
+* MQTT broker (optional)
+* WebSocket support
+
+Build:
 
 ```bash
-npm run dev
-npm run dev:server
 npm run build
-npm run start
-npm run lint
-npm run test
-npm run migrate
 ```
 
-## Device sync API
+Start:
 
-Endpoint:
+```bash
+npm run start
+```
+
+---
+
+# 📌 Repository Topics
 
 ```text
-POST /api/device/sync
+nextjs
+react
+typescript
+iot
+esp32
+mqtt
+websocket
+postgresql
+drizzle-orm
+agritech
+smart-farming
+farm-automation
+dashboard
+realtime
+precision-agriculture
 ```
 
-Required headers:
+---
 
-- `x-device-id`
-- `x-device-key`
+# 🌍 Live Project
 
-Example payload:
+https://gansystem.vercel.app
 
-```json
-{
-  "firmwareVersion": "1.0.0",
-  "readings": [
-    {
-      "channelKey": "tank_main",
-      "numericValue": 72,
-      "rawValue": 38,
-      "rawUnit": "cm",
-      "status": "ok"
-    }
-  ],
-  "acknowledgements": [
-    {
-      "commandId": "cmd_123",
-      "status": "acknowledged",
-      "executedAt": "2026-03-30T12:30:00.000Z",
-      "deviceMessage": "Pump toggled"
-    }
-  ]
-}
-```
+---
 
-Response includes:
+# 👨‍💻 Developer
 
-- `serverTime`
-- controller heartbeat metadata
-- channel configuration for firmware
-- pending commands
-- pest-control schedule when configured
+**Iyobosa Amaddin**
 
-## Deployment notes
+GitHub:
+https://github.com/codeandbe
 
-This project is not a static or purely serverless dashboard. Production behavior depends on:
+LinkedIn:
+https://linkedin.com/in/codeandbe
 
-- a reachable Postgres database via `DATABASE_URL`
-- the custom Node runtime in `server.ts`
-- WebSocket upgrade handling
-- optional MQTT broker connectivity for device command distribution and broker-originated updates
+---
 
-Recommended production shape:
+# 📄 License
 
-- deploy as a long-running Node process
-- run `npm run build`
-- start with `npm run start`
-- provide a stable Postgres database
-- place a reverse proxy in front if needed
+This repository is provided for portfolio and educational purposes.
 
-## Recent implementation updates
-
-- API routes were refactored to use shared request/error helpers
-- several unresolved async response bugs were fixed in route handlers
-- MQTT async handling was corrected so broker-driven updates await their snapshots properly
-- global, route-level, and section-scoped error boundaries were added
-- dashboard failures are now more localized instead of always replacing the whole active route segment
+Certain deployment credentials, infrastructure configurations, and production resources have been excluded from the repository.
