@@ -106,6 +106,10 @@ The system enables users to:
 
 ![Dashboard](screenshots/dashboard.png)
 
+## System Architecture
+
+![Dashboard](screenshots/system-architecture.png)
+
 ## Controller Management
 
 ![Controllers](screenshots/controllers.png)
